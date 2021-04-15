@@ -1,20 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Newtonsoft.Json;
+using System;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Openfin.Desktop.Messaging;
 using Fin = Openfin.Desktop;
+using Newtonsoft.Json.Linq;
 
 namespace Stub
 {
@@ -55,7 +44,7 @@ namespace Stub
             _fin = Fin.Runtime.GetRuntimeInstance(runtimeOptions);            
             _fin.Error += (sender, e) =>
             {
-                Console.WriteLine(e);
+                Console.WriteLine("Error om stub", e);
             };
 
             _fin.Connect(() =>
@@ -83,19 +72,17 @@ namespace Stub
         private void ChannelClient_Opened(object sender, EventArgs e)
         {
             Console.WriteLine("channel opened");
-//            _channelClient.DispatchAsync("getValue").ContinueWith((data) =>
-//            {
-//                Console.WriteLine(data);
-//            });
+            var payload = new JObject() { { "requestedBy", "donet code" } };
+            _channelClient.DispatchAsync<JObject>("getValue", payload).ContinueWith((data) =>
+            {
+                Console.WriteLine("getValue returns:");
+                Console.WriteLine(data.Result.ToString());
+            });
         }
         private void ChannelClient_Closed(object sender, EventArgs e)
         {
             Console.WriteLine("channel disconnected");
-        }
-
-        private void OnGetValue(object result)
-        {
-            Console.WriteLine(result);
+            _channelClient.ConnectAsync();
         }
     }
 }
