@@ -67,7 +67,7 @@ namespace Stub
             });
         }
 
-        private async void ConnectToChannel()
+        private void ConnectToChannel()
         {
             ChannelConnectOptions opts = new ChannelConnectOptions(ChannelName)
             {
@@ -77,7 +77,7 @@ namespace Stub
             _channelClient = _fin.InterApplicationBus.Channel.CreateClient(opts);
             _channelClient.Opened += ChannelClient_Opened;
             _channelClient.Closed += ChannelClient_Closed;
-            await _channelClient.ConnectAsync();
+            _channelClient.ConnectAsync();
         }
 
         private void ChannelClient_Opened(object sender, EventArgs e)
